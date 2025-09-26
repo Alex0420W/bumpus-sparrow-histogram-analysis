@@ -3,20 +3,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
 
+# Load and process the data
+# Read the Excel file (try different engines for .xls files)
 try:
-    df = pd.read_excel('bumpus-data.xls', header=None, engine='xlrd')
+    df = pd.read_excel('1758918419381_1632763346bumpus0.xls', header=None, engine='xlrd')
 except ImportError:
-    df = pd.read_excel('bumpus-data.xls', header=None, engine='openpyxl')
+    # If xlrd is not available, try openpyxl (may need to convert file)
+    df = pd.read_excel('1758918419381_1632763346bumpus0.xls', header=None, engine='openpyxl')
 
 # Filter for female sparrows (column 1 = 'f') and extract relevant columns
 # Column 1: sex, Column 3: survival status (T=died, F=survived), Column 12: keel length
 female_data = df[df.iloc[:, 1] == 'f'].copy()
 
-# Separate died (T) and survived (F) groups
-died_group = female_data[female_data.iloc[:, 3] == 'T']
-survived_group = female_data[female_data.iloc[:, 3] == 'F']
+# Separate died (F) and survived (T) groups 
+# Based on Bumpus study: 72 survived, 64 died
+died_group = female_data[female_data.iloc[:, 3] == 'F']
+survived_group = female_data[female_data.iloc[:, 3] == 'T']
 
-# keel lengths (column 12)
+# Extract keel lengths (column 12)
 keel_died = died_group.iloc[:, 12].dropna()
 keel_survived = survived_group.iloc[:, 12].dropna()
 
@@ -26,6 +30,9 @@ print(f"Died: {len(keel_died)} | Survived: {len(keel_survived)}")
 print(f"\nKeel length statistics:")
 print(f"Died - Mean: {keel_died.mean():.4f}, Range: {keel_died.min():.3f} - {keel_died.max():.3f}")
 print(f"Survived - Mean: {keel_survived.mean():.4f}, Range: {keel_survived.min():.3f} - {keel_survived.max():.3f}")
+
+# Verify we have the right counts (should be 64 died, 72 survived total)
+print(f"Verification - Total died: {len(died_group)}, Total survived: {len(survived_group)}")
 
 # Create histogram with 0.05 inch bins as suggested
 bin_size = 0.05
@@ -74,11 +81,12 @@ plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.show()
 
-
+# Statistical analysis
 print(f"\nStatistical Analysis:")
 print(f"T-test p-value: {stats.ttest_ind(keel_died, keel_survived)[1]:.4f}")
 print(f"Mean difference (died - survived): {keel_died.mean() - keel_survived.mean():.4f}")
 
+# Analysis of selection pattern
 print(f"\nSelection Analysis:")
 print(f"The histograms show the distribution of keel lengths in female sparrows.")
 print(f"Mean keel length:")
@@ -86,7 +94,7 @@ print(f"- Died: {keel_died.mean():.4f} inches")
 print(f"- Survived: {keel_survived.mean():.4f} inches")
 print(f"- Difference: {abs(keel_died.mean() - keel_survived.mean()):.4f} inches")
 
-# Determining selection type based on the pattern
+# Determine selection type based on the pattern
 if abs(keel_died.mean() - keel_survived.mean()) < 0.01:
     selection_type = "stabilizing"
     explanation = "Both groups have very similar mean values, suggesting intermediate keel lengths were favored."
