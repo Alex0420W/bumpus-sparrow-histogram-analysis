@@ -6,10 +6,10 @@ from scipy import stats
 # Load and process the data
 # Read the Excel file (try different engines for .xls files)
 try:
-    df = pd.read_excel('1758918419381_1632763346bumpus0.xls', header=None, engine='xlrd')
+    df = pd.read_excel('bumpus-data.xls', header=None, engine='xlrd')
 except ImportError:
     # If xlrd is not available, try openpyxl (may need to convert file)
-    df = pd.read_excel('1758918419381_1632763346bumpus0.xls', header=None, engine='openpyxl')
+    df = pd.read_excel('bumpus-data.xls', header=None, engine='openpyxl')
 
 # Filter for female sparrows (column 1 = 'f') and extract relevant columns
 # Column 1: sex, Column 3: survival status (T=died, F=survived), Column 12: keel length
