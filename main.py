@@ -15,10 +15,10 @@ except ImportError:
 # Column 1: sex, Column 3: survival status (T=died, F=survived), Column 12: keel length
 female_data = df[df.iloc[:, 1] == 'f'].copy()
 
-# Separate died (F) and survived (T) groups 
+# Separate died (T) and survived (F) groups 
 # Based on Bumpus study: 72 survived, 64 died
-died_group = female_data[female_data.iloc[:, 3] == 'F']
-survived_group = female_data[female_data.iloc[:, 3] == 'T']
+died_group = female_data[female_data.iloc[:, 3] == 'T']
+survived_group = female_data[female_data.iloc[:, 3] == 'F']
 
 # Extract keel lengths (column 12)
 keel_died = died_group.iloc[:, 12].dropna()
